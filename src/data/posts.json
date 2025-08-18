@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "title": "Getting Started with Next.js 14",
+    "slug": "getting-started-nextjs-14",
+    "content": "Next.js 14 brings exciting new features including the stable App Router, improved performance, and better developer experience. In this comprehensive guide, we'll explore all the new features and how to leverage them in your projects.\n\n## App Router Advantages\n\nThe App Router provides a more intuitive way to build React applications with features like:\n\n- Server Components by default\n- Improved routing with layouts\n- Better data fetching patterns\n- Enhanced caching strategies\n\nLet's dive deeper into each of these concepts...",
+    "excerpt": "Explore the latest features in Next.js 14 and learn how to build modern web applications with the App Router.",
+    "publishedAt": "2024-01-15T10:00:00Z",
+    "author": "John Doe",
+    "tags": ["nextjs", "react", "web-development"]
+  },
+  {
+    "id": "2",
+    "title": "Mastering Server Components in React",
+    "slug": "mastering-server-components-react",
+    "content": "Server Components represent a paradigm shift in how we think about React applications. They allow us to render components on the server, reducing the JavaScript bundle size and improving performance.\n\n## Benefits of Server Components\n\n- Zero JavaScript sent to the client\n- Direct access to backend resources\n- Improved SEO and initial page load\n- Better security for sensitive operations\n\nIn this article, we'll explore practical examples and best practices...",
+    "excerpt": "Learn how Server Components can revolutionize your React applications with better performance and user experience.",
+    "publishedAt": "2024-01-12T14:30:00Z",
+    "author": "Jane Smith",
+    "tags": ["react", "server-components", "performance"]
+  },
+  {
+    "id": "3",
+    "title": "Building Scalable APIs with Next.js Route Handlers",
+    "slug": "building-scalable-apis-nextjs-route-handlers",
+    "content": "Next.js Route Handlers provide a powerful way to build API endpoints directly within your Next.js application. They offer excellent performance and seamless integration with your frontend code.\n\n## Key Features\n\n- Full control over HTTP methods\n- Built-in request/response helpers\n- Middleware support\n- Edge runtime compatibility\n\nLet's build a complete CRUD API step by step...",
+    "excerpt": "Discover how to create robust and scalable APIs using Next.js Route Handlers with practical examples.",
+    "publishedAt": "2024-01-10T09:15:00Z",
+    "author": "Mike Johnson",
+    "tags": ["nextjs", "api", "backend", "route-handlers"]
+  }
+]
