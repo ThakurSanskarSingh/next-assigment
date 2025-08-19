@@ -2,7 +2,6 @@ import { BlogPost } from '@/types/blog';
 import postsData from '@/data/posts.json';
 
 export async function getAllPosts(): Promise<BlogPost[]> {
-  // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 100));
   return postsData as BlogPost[];
 }
