@@ -6,11 +6,12 @@ export default function AboutPage() {
           About This Blog
         </h1>
         
-        <div className="prose max-w-none">
+        <div className=" prose  max-w-none">
           <p className="text-lg text-gray-700 mb-6">
             Welcome to our personal blog platform built with Next.js 14! This project
             demonstrates modern web development practices using the latest React and
-            Next.js features.
+            Next.js featur
+            es.
           </p>
           
           <h2 className="text-2xl font-semibold mb-4">What You'll Find Here</h2>
