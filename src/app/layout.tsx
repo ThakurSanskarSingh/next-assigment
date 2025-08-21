@@ -1,13 +1,19 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Personal Blog Platform',
-  description: 'A modern blog built with Next.js 14 and App Router',
+  title: {
+    default: 'BlogPlatform - Modern Next.js Blog',
+    template: '%s | BlogPlatform'
+  },
+  description: 'A modern blog platform built with Next.js 14, featuring server components, static generation, and modern web development practices.',
+  keywords: ['blog', 'nextjs', 'react', 'typescript', 'web development'],
+ 
 };
 
 export default function RootLayout({
@@ -17,13 +23,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <div className="min-h-screen bg-gray-50">
-          <Navigation />
-          <main>
-            {children}
-          </main>
-        </div>
+      <body className={`${inter.className} min-h-screen flex flex-col`}>
+        <Navigation />
+        <main className="flex-1">
+          {children}
+        </main>
+        <Footer />
       </body>
     </html>
   );
