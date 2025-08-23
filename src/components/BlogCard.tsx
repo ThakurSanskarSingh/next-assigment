@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { BlogPost } from '@/types/blog';
+import { getPostViewRoute } from '@/constants/routes';
 
 interface BlogCardProps {
   post: BlogPost;
@@ -11,7 +12,7 @@ export default function BlogCard({ post }: BlogCardProps) {
       <header className="mb-4">
         <h2 className="text-xl font-semibold mb-2 leading-tight">
           <Link
-            href={`/posts/${post.slug}`}
+            href={getPostViewRoute(post.slug)}
             className="text-blue-600 hover:text-blue-800 transition-colors"
           >
             {post.title}
@@ -53,8 +54,8 @@ export default function BlogCard({ post }: BlogCardProps) {
 
       <footer className="pt-3 border-t border-gray-100">
         <Link
-          href={`/posts/${post.slug}`}
-          className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors"
+          href={getPostViewRoute(post.slug)}
+          className="inline-flex items-center text-blue-800 font-medium text-sm transition-colors"
         >
           Read more
           <svg 
