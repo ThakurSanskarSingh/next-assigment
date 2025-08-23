@@ -4,12 +4,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { MenuIcon, XIcon, UserIcon, LogOutIcon } from 'lucide-react';
+import { User } from '@/types/auth';
+import { ROUTES } from '@/constants/routes';
 
 export default function Navigation() {
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     checkAuthStatus();
@@ -38,20 +40,20 @@ export default function Navigation() {
       setIsAuthenticated(false);
       setUser(null);
       setIsMobileMenuOpen(false);
-      window.location.href = '/';
+              window.location.href = ROUTES.HOME;
     } catch (error) {
       console.error('Logout failed:', error);
     }
   };
 
   const publicNavItems = [
-    { href: '/', label: 'Home', exact: true },
-    { href: '/about', label: 'About', exact: true },
+    { href: ROUTES.HOME, label: 'Home', exact: true },
+    { href: ROUTES.ABOUT, label: 'About', exact: true },
   ];
 
   const adminNavItems = [
-    { href: '/admin', label: 'Dashboard', exact: true },
-    { href: '/admin/create', label: 'New Post', exact: false },
+    { href: ROUTES.ADMIN, label: 'Dashboard', exact: true },
+    { href: ROUTES.ADMIN_CREATE_POST, label: 'New Post', exact: false },
   ];
 
   const isActiveLink = (href: string, exact: boolean = false) => {
@@ -87,7 +89,7 @@ export default function Navigation() {
       <Link
         href={href}
         className={`${baseClasses} ${activeClasses}`}
-        onClick={onClick}
+        {...(onClick && { onClick })}
       >
         {label}
       </Link>
@@ -98,8 +100,8 @@ export default function Navigation() {
     <nav className="bg-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+         
+          <Link href={ROUTES.HOME} className="flex items-center space-x2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">B</span>
             </div>
@@ -116,7 +118,7 @@ export default function Navigation() {
               />
             ))}
 
-            {/* Admin Navigation (if authenticated) */}
+         
             {isAuthenticated && (
               <>
                 <div className="w-px h-6 bg-gray-300 mx-2"></div>
@@ -151,7 +153,7 @@ export default function Navigation() {
               </div>
             ) : (
               <Link
-                href="/login"
+                href={ROUTES.LOGIN}
                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
               >
                 Login
@@ -222,7 +224,7 @@ export default function Navigation() {
                   </div>
                 ) : (
                   <Link
-                    href="/login"
+                    href={ROUTES.LOGIN}
                     className="block px-3 py-2 text-base font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >

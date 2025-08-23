@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     default: 'BlogPlatform - Modern Next.js Blog',
     template: '%s | BlogPlatform'
   },
-  description: 'A modern blog platform built with Next.js 14, featuring server components, static generation, and modern web development practices.',
+  description: 'A modern blog platform built with Next.js, featuring server components, static generation, and modern web development practices.',
   keywords: ['blog', 'nextjs', 'react', 'typescript', 'web development'],
  
 };

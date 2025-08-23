@@ -3,13 +3,25 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { api } from '@/util/fetch';
+import { ROUTES } from '@/constants/routes';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,19 +29,12 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await fetch('/api/auth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await api.post(ROUTES.API.AUTH, formData);
 
       if (response.ok) {
-        router.push('/admin');
+        router.push(ROUTES.ADMIN);
       } else {
-        const data = await response.json();
-        setError(data.error || 'Login failed');
+        setError(response.error || 'Login failed');
       }
     } catch (err) {
       setError('An error occurred during login');
@@ -37,6 +42,7 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full space-y-8">
@@ -66,8 +72,8 @@ export default function LoginPage() {
                 name="email"
                 type="email"
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleInputChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black "
                 placeholder="admin@example.com"
               />
@@ -82,8 +88,8 @@ export default function LoginPage() {
                 name="password"
                 type="password"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleInputChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-black "
                 placeholder="password"
               />
@@ -101,13 +107,11 @@ export default function LoginPage() {
           </div>
           
           <div className="text-center">
-            <Link href="/" className="text-blue-600 hover:text-blue-800">
+            <Link href={ROUTES.HOME} className="text-blue-600 hover:text-blue-800">
               ← Back to Home
             </Link>
           </div>
         </form>
-        
-       
       </div>
     </div>
   );

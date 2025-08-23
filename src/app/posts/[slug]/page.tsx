@@ -1,6 +1,8 @@
-import { getPostBySlug, getAllPosts } from '@/lib/data';
+import { getPostBySlug, getAllPosts, getAdjacentPosts } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { ROUTES } from '@/constants/routes';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 
 interface PostPageProps {
   params: {
@@ -37,10 +39,12 @@ export default async function PostPage({ params }: PostPageProps) {
     notFound();
   }
 
+  const { previous, next } = await getAdjacentPosts(params.slug);
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <Link 
-        href="/"
+        href={ROUTES.HOME}
         className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-6"
       >
         ← Back to Home
@@ -96,6 +100,43 @@ export default async function PostPage({ params }: PostPageProps) {
           })}
         </div>
       </article>
+
+      {/* Post Navigation */}
+      {(previous || next) && (
+        <nav className="mt-8 pt-6 border-t border-gray-200">
+          <div className="flex justify-between items-center">
+            {previous ? (
+              <Link
+                href={`/posts/${previous.slug}`}
+                className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group"
+              >
+                <ChevronLeftIcon className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+                <div className="text-left">
+                  <div className="text-sm text-gray-500">Previous Post</div>
+                  <div className="font-medium">{previous.title}</div>
+                </div>
+              </Link>
+            ) : (
+              <div></div>
+            )}
+            
+            {next ? (
+              <Link
+                href={`/posts/${next.slug}`}
+                className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group text-right"
+              >
+                <div className="text-right">
+                  <div className="text-sm text-gray-500">Next Post</div>
+                  <div className="font-medium">{next.title}</div>
+                </div>
+                <ChevronRightIcon className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            ) : (
+              <div></div>
+            )}
+          </div>
+        </nav>
+      )}
     </div>
   );
 }
