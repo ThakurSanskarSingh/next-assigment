@@ -5,9 +5,9 @@ import { ROUTES } from '@/constants/routes';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 
 interface PostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {
@@ -18,7 +18,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PostPageProps) {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   
   if (!post) {
     return {
@@ -33,13 +34,14 @@ export async function generateMetadata({ params }: PostPageProps) {
 }
 
 export default async function PostPage({ params }: PostPageProps) {
-  const post = await getPostBySlug(params.slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
 
   if (!post) {
     notFound();
   }
 
-  const { previous, next } = await getAdjacentPosts(params.slug);
+  const { previous, next } = await getAdjacentPosts(slug);
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
