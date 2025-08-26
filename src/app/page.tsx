@@ -1,6 +1,7 @@
-import { getAllPosts } from '@/lib/data';
+import { getAllPosts } from '@/lib/posts';
 import BlogCard from '@/components/BlogCard';
 import { Suspense } from 'react';
+import ClientHomePage from '@/containers/ClientHomePage';
 
 
 
@@ -117,22 +118,19 @@ async function BlogListing() {
 export default function HomePage() {
   return (
     <main className="container mx-auto px-4 py-8">
-    
-         
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-semibold text-gray-900">
             Latest Posts
           </h2>
-                  </div>
+        </div>
         
         <Suspense fallback={<BlogListingSkeleton />}>
-          <BlogListing />
+          <ClientHomePage>
+            <BlogListing />
+          </ClientHomePage>
         </Suspense>
       </div>
-
-     
-     
     </main>
   );
 }

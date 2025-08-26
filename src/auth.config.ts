@@ -13,14 +13,35 @@ export const authConfig = {
         const password = credentials?.password as string | undefined;
         if (!email || !password) return null;
 
-        // Demo user (replace with real user lookup)
+        // Demo user with role (replace with real user lookup)
         if (email.toLowerCase() === 'admin@example.com' && password === 'admin123') {
-          return { id: '1', email, name: 'Admin' };
+          return { 
+            id: '1', 
+            email, 
+            name: 'Admin',
+            role: 'admin' // Add role for access control
+          };
         }
         return null;
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }: { token: any; user: any }) {
+      // Add role to token when user signs in
+      if (user) {
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }: { session: any; token: any }) {
+      // Add role to session
+      if (token) {
+        session.user.role = token.role;
+      }
+      return session;
+    },
+  },
   pages: {
     signIn: '/login',
   },
