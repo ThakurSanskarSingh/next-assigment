@@ -2,45 +2,23 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MenuIcon, XIcon, UserIcon, LogOutIcon } from 'lucide-react';
-import { User } from '@/types/auth';
 import { ROUTES } from '@/constants/routes';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Navigation() {
   const pathname = usePathname();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === 'authenticated';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
 
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
-    try {
-      const response = await fetch('/api/auth/status');
-      if (response.ok) {
-        const userData = await response.json();
-        setIsAuthenticated(true);
-        setUser(userData.user);
-      } else {
-        setIsAuthenticated(false);
-        setUser(null);
-      }
-    } catch {
-      setIsAuthenticated(false);
-      setUser(null);
-    }
-  };
+  const user = session?.user as { name?: string | null } | undefined;
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/auth', { method: 'DELETE' });
-      setIsAuthenticated(false);
-      setUser(null);
+      await signOut({ callbackUrl: ROUTES.HOME });
       setIsMobileMenuOpen(false);
-              window.location.href = ROUTES.HOME;
     } catch (error) {
       console.error('Logout failed:', error);
     }
@@ -118,7 +96,6 @@ export default function Navigation() {
               />
             ))}
 
-         
             {isAuthenticated && (
               <>
                 <div className="w-px h-6 bg-gray-300 mx-2"></div>
