@@ -1,6 +1,10 @@
+'use client';
+
 import Link from 'next/link';
 import { PlusIcon } from 'lucide-react';
 import { ROUTES, getPostViewRoute, getPostEditRoute } from '@/constants/routes';
+import { deletePostAction } from '@/app/actions';
+import { useState } from 'react';
 
 interface Post {
   id: string;
@@ -16,6 +20,24 @@ interface AdminDashboardProps {
 }
 
 export default function AdminDashboard({ posts }: AdminDashboardProps) {
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  
+  const handleDelete = async (slug: string) => {
+    if (confirm('Are you sure you want to delete this post?')) {
+      setIsDeleting(slug);
+      try {
+        const result = await deletePostAction(slug);
+        if (!result.success) {
+          alert(result.message || 'Failed to delete post');
+        }
+      } catch (error) {
+        console.error('Error deleting post:', error);
+        alert('An error occurred while deleting the post');
+      } finally {
+        setIsDeleting(null);
+      }
+    }
+  };
   return (
     <div className="container mx-auto px-4 py-8">
       <header className="flex justify-between items-center mb-8">
@@ -84,8 +106,12 @@ export default function AdminDashboard({ posts }: AdminDashboardProps) {
                     >
                       Edit
                     </Link>
-                    <button className="text-red-600 hover:text-red-900">
-                      Delete
+                    <button 
+                      className="text-red-600 hover:text-red-900"
+                      onClick={() => handleDelete(post.slug)}
+                      disabled={isDeleting === post.slug}
+                    >
+                      {isDeleting === post.slug ? 'Deleting...' : 'Delete'}
                     </button>
                   </td>
                 </tr>

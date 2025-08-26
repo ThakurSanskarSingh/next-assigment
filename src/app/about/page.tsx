@@ -8,7 +8,7 @@ export default function AboutPage() {
         
         <div className=" prose  max-w-none">
           <p className="text-lg text-gray-700 mb-6">
-            Welcome to our personal blog platform built with Next.js 14! This project
+            Welcome to our personal blog platform built with Next.js! This project
             demonstrates modern web development practices using the latest React and
             Next.js featur
             es.
@@ -25,7 +25,7 @@ export default function AboutPage() {
           <h2 className="text-2xl font-semibold mb-4">Technical Stack</h2>
           <p className="text-gray-700 mb-4">This blog is built using:</p>
           <ul className="list-disc ml-6 mb-6 text-gray-700">
-            <li><strong>Next.js 14</strong> - React framework with App Router</li>
+            <li><strong>Next.js</strong> - React framework with App Router</li>
             <li><strong>TypeScript</strong> - Type-safe JavaScript</li>
             <li><strong>Tailwind CSS</strong> - Utility-first CSS framework</li>
             <li><strong>Server Components</strong> - Enhanced performance</li>
