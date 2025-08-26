@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { api } from '@/util/fetch';
 import { ROUTES } from '@/constants/routes';
+import { signIn } from 'next-auth/react';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -29,12 +29,16 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await api.post(ROUTES.API.AUTH, formData);
+      const res = await signIn('credentials', {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
+      });
 
-      if (response.ok) {
+      if (res?.ok) {
         router.push(ROUTES.ADMIN);
       } else {
-        setError(response.error || 'Login failed');
+        setError('Invalid email or password');
       }
     } catch (err) {
       setError('An error occurred during login');
