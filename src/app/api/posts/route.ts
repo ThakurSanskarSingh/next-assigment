@@ -11,7 +11,6 @@ export async function GET(request: NextRequest) {
 
     let posts = await getAllPosts();
 
-    // Search functionality
     if (query) {
       const searchResults = posts.filter(post => 
         post.title.toLowerCase().includes(query.toLowerCase()) ||
@@ -21,7 +20,6 @@ export async function GET(request: NextRequest) {
       posts = searchResults;
     }
 
-    // Pagination
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const paginatedPosts = posts.slice(startIndex, endIndex);
@@ -38,7 +36,12 @@ export async function GET(request: NextRequest) {
       }
     };
 
-    return NextResponse.json(response, { status: 200 });
+    return NextResponse.json(response, {
+      status: 200,
+      headers: {
+        'Cache-Control': 's-maxage=10, stale-while-revalidate=59',
+      },
+    });
   } catch (error) {
     console.error('Error fetching posts:', error);
     return NextResponse.json(
@@ -52,7 +55,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    // Validate input data
     const validation = validateCreatePost(body);
     if (!validation.isValid) {
       return NextResponse.json(
@@ -64,7 +66,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create the post
     const newPost = await createPost(body);
 
     return NextResponse.json(newPost, { status: 201 });

@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidateTag, revalidatePath } from 'next/cache';
 import { createPost, updatePost, deletePost } from '@/lib/posts';
 import { validateCreatePost, validateUpdatePost } from '@/lib/validation';
 import { ROUTES } from '@/constants/routes';
@@ -26,6 +26,8 @@ export async function createPostAction(formData: FormData) {
 
   try {
     await createPost(postData);
+  revalidateTag('posts');
+  revalidatePath('/');
     revalidatePath(ROUTES.ADMIN);
     revalidatePath(ROUTES.POSTS);
     return { success: true };
@@ -56,6 +58,9 @@ export async function updatePostAction(slug: string, formData: FormData) {
 
   try {
     const updatedPost = await updatePost(slug, postData);
+  revalidateTag('posts');
+  revalidatePath('/');
+  revalidatePath(`/posts/${slug}`);
     
     if (!updatedPost) {
       return { success: false, message: 'Post not found' };
@@ -73,6 +78,8 @@ export async function updatePostAction(slug: string, formData: FormData) {
 export async function deletePostAction(slug: string) {
   try {
     const success = await deletePost(slug);
+  revalidateTag('posts');
+  revalidatePath('/');
     
     if (!success) {
       return { success: false, message: 'Post not found' };

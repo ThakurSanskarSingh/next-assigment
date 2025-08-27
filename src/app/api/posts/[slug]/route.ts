@@ -25,7 +25,12 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(post, { status: 200 });
+    return NextResponse.json(post, {
+      status: 200,
+      headers: {
+        'Cache-Control': 's-maxage=10, stale-while-revalidate=59',
+      },
+    });
   } catch (error) {
     console.error('Error fetching post:', error);
     return NextResponse.json(
