@@ -6,20 +6,13 @@ import postsData from '@/data/posts.json';
 let posts: BlogPost[] = [...postsData];
 
 export async function getAllPosts(): Promise<BlogPost[]> {
-  const res = await fetch(ROUTES.API.POSTS, { 
-    next: { 
-      tags: ['posts'],
-      revalidate: 60 
-    }
-  });
-  if (!res.ok) {
-    throw new Error('Failed to fetch posts');
-  }
-  return res.json();
+  // In a real application, this would fetch from a database or external API.
+  // For this example, we're returning the in-memory posts data.
+  return posts;
 }
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  const res = await fetch(`${ROUTES.API.POSTS}/${slug}`, { 
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}${ROUTES.API.POSTS}/${slug}`, { 
     next: { 
       tags: ['posts']
     }

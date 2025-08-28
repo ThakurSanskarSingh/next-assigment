@@ -1,45 +1,9 @@
-import { getAllPosts } from '@/lib/posts';
-import BlogCard from '@/components/BlogCard';
 import { Suspense } from 'react';
+import { BlogPost } from '@/types/blog';
 import ClientHomePage from '@/containers/ClientHomePage';
+import { getAllPosts } from '@/lib/posts';
 
-
-
-function ErrorDisplay({ message }: { message: string }) {
-  return (
-    <div className="text-center py-12">
-      <div className="bg-red-50 border border-red-200 rounded-lg p-8 max-w-md mx-auto">
-        <div className="flex items-center justify-center w-12 h-12 bg-red-100 rounded-full mx-auto mb-4">
-          <svg 
-            className="w-6 h-6 text-red-600" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={2} 
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" 
-            />
-          </svg>
-        </div>
-        <h3 className="text-lg font-semibold text-red-800 mb-2">
-          Oops! Something went wrong
-        </h3>
-        <p className="text-red-600 text-sm mb-4">
-          {message}
-        </p>
-        <button 
-          onClick={() => window.location.reload()} 
-          className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors text-sm font-medium"
-        >
-          Try Again
-        </button>
-      </div>
-    </div>
-  );
-}
+import ErrorDisplay from '@/components/ErrorDisplay';
 
 function EmptyState() {
   return (
@@ -90,32 +54,21 @@ function BlogListingSkeleton() {
 }
 
 async function BlogListing() {
-  try {
-    const posts = await getAllPosts();
-
-    if (!posts || posts.length === 0) {
-      return <EmptyState />;
-    }
-
-    return (
-      <section className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {posts.map((post) => (
-          <BlogCard key={post.id} post={post} />
-        ))}
-      </section>
-    );
-  } catch (error) {
-    console.error('Error fetching blog posts:', error);
-    return (
-      <ErrorDisplay 
-        message="We couldn't load the blog posts. Please try again later." 
-      />
-    );
-  }
+  // Posts are now fetched in HomePage and passed to ClientHomePage
+  // BlogListing is primarily for rendering and error display
+  // The actual posts will be managed by ClientHomePage's state
+  return null; // ClientHomePage will render the posts
 }
 
 
-export default function HomePage() {
+export default async function HomePage() {
+  let posts: BlogPost[] = [];
+  try {
+    posts = await getAllPosts();
+  } catch (error) {
+    console.error('Error fetching posts in HomePage:', error);
+    // Optionally handle this error more gracefully, e.g., by showing a global error message
+  }
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -126,7 +79,10 @@ export default function HomePage() {
         </div>
         
         <Suspense fallback={<BlogListingSkeleton />}>
-          <ClientHomePage>
+          {/* Fetch posts directly in HomePage to pass to ClientHomePage and BlogListing */}
+          {/* This ensures posts are available for both server and client components */}
+          {/* The actual fetching logic is still within BlogListing for error handling and empty state */}
+          <ClientHomePage initialPosts={posts}>
             <BlogListing />
           </ClientHomePage>
         </Suspense>

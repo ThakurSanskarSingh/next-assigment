@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllPosts, createPost } from '@/lib/posts';
+import { createPost, getAllPosts } from '@/lib/posts';
 import { validateCreatePost } from '@/lib/validation';
 
 export async function GET(request: NextRequest) {
@@ -9,29 +9,29 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
 
-    let posts = await getAllPosts();
+    let allPosts = await getAllPosts();
 
     if (query) {
-      const searchResults = posts.filter(post => 
+      const searchResults = allPosts.filter(post => 
         post.title.toLowerCase().includes(query.toLowerCase()) ||
         post.excerpt.toLowerCase().includes(query.toLowerCase()) ||
         post.author.toLowerCase().includes(query.toLowerCase())
       );
-      posts = searchResults;
+      allPosts = searchResults;
     }
 
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
-    const paginatedPosts = posts.slice(startIndex, endIndex);
+    const paginatedPosts = allPosts.slice(startIndex, endIndex);
 
     const response = {
       posts: paginatedPosts,
       pagination: {
         page,
         limit,
-        total: posts.length,
-        totalPages: Math.ceil(posts.length / limit),
-        hasNext: endIndex < posts.length,
+        total: allPosts.length,
+        totalPages: Math.ceil(allPosts.length / limit),
+        hasNext: endIndex < allPosts.length,
         hasPrev: page > 1
       }
     };
