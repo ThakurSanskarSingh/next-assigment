@@ -2,7 +2,6 @@ import { auth } from '@/auth';
 import { NextResponse } from 'next/server';
 
 export default auth((req) => {
-  // This function is called for every request to protected routes
   const isLoggedIn = !!req.auth;
   
   if (!isLoggedIn) {
@@ -17,4 +16,5 @@ export const config = {
     '/admin/:path*', // Protect all admin routes
     '/api/admin/:path*', // Protect admin API routes (if any)
   ],
+  runtime: "nodejs",
 };
