@@ -1,69 +1,39 @@
-export interface CreatePostData {
-  title: string;
-  content: string;
-  excerpt: string;
-  author: string;
-  tags?: string[];
-}
+import { z, ZodIssue } from "zod";
 
-export interface UpdatePostData extends Partial<CreatePostData> {
-  id?: string;
-}
 
-export function validateCreatePost(data: any): { isValid: boolean; errors: string[] } {
-  const errors: string[] = [];
+export const CreatePostSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters long"),
+  content: z.string().min(10, "Content must be at least 10 characters long"),
+  excerpt: z.string().min(10, "Excerpt must be at least 10 characters long"),
+  author: z.string().min(2, "Author must be at least 2 characters long"),
+  tags: z.array(z.string()).optional(),
+});
 
-  if (!data.title || typeof data.title !== 'string' || data.title.trim().length < 3) {
-    errors.push('Title must be at least 3 characters long');
-  }
+export const UpdatePostSchema = CreatePostSchema.partial().extend({
+  id: z.string().optional(),
+});
 
-  if (!data.content || typeof data.content !== 'string' || data.content.trim().length < 10) {
-    errors.push('Content must be at least 10 characters long');
-  }
+export type CreatePostData = z.infer<typeof CreatePostSchema>;
+export type UpdatePostData = z.infer<typeof UpdatePostSchema>;
 
-  if (!data.excerpt || typeof data.excerpt !== 'string' || data.excerpt.trim().length < 10) {
-    errors.push('Excerpt must be at least 10 characters long');
-  }
 
-  if (!data.author || typeof data.author !== 'string' || data.author.trim().length < 2) {
-    errors.push('Author must be at least 2 characters long');
-  }
-
-  if (data.tags && (!Array.isArray(data.tags) || data.tags.some((tag: any) => typeof tag !== 'string'))) {
-    errors.push('Tags must be an array of strings');
-  }
-
+export function validateCreatePost(data: unknown) {
+  const result = CreatePostSchema.safeParse(data);
   return {
-    isValid: errors.length === 0,
-    errors
+    isValid: result.success,
+   errors: result.success ? [] : result.error.issues.map((err: ZodIssue) => `${err.path.join(".")}: ${err.message}`),
+
   };
 }
 
-export function validateUpdatePost(data: any): { isValid: boolean; errors: string[] } {
-  const errors: string[] = [];
-
-  if (data.title !== undefined && (typeof data.title !== 'string' || data.title.trim().length < 3)) {
-    errors.push('Title must be at least 3 characters long');
-  }
-
-  if (data.content !== undefined && (typeof data.content !== 'string' || data.content.trim().length < 10)) {
-    errors.push('Content must be at least 10 characters long');
-  }
-
-  if (data.excerpt !== undefined && (typeof data.excerpt !== 'string' || data.excerpt.trim().length < 10)) {
-    errors.push('Excerpt must be at least 10 characters long');
-  }
-
-  if (data.author !== undefined && (typeof data.author !== 'string' || data.author.trim().length < 2)) {
-    errors.push('Author must be at least 2 characters long');
-  }
-
-  if (data.tags !== undefined && (!Array.isArray(data.tags) || data.tags.some((tag: any) => typeof tag !== 'string'))) {
-    errors.push('Tags must be an array of strings');
-  }
-
+export function validateUpdatePost(data: unknown) {
+  const result = UpdatePostSchema.safeParse(data);
   return {
-    isValid: errors.length === 0,
-    errors
-  };
+    isValid: result.success,
+  errors: result.success
+    ? []
+    : result.error.issues.map((err: ZodIssue) => `${err.path.join(".")}: ${err.message}`),
+};
 }
+
+

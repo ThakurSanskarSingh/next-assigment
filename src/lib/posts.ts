@@ -6,22 +6,29 @@ import postsData from '@/data/posts.json';
 let posts: BlogPost[] = [...postsData];
 
 export async function getAllPosts(): Promise<BlogPost[]> {
-  // In a real application, this would fetch from a database or external API.
-  // For this example, we're returning the in-memory posts data.
   return posts;
 }
 
+// export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
+//   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}${ROUTES.API.POSTS}/${slug}`, { 
+//     next: { 
+//       tags: ['posts']
+//     }
+//   });
+//   if (!res.ok) {
+//     return null;
+//   }
+//   return res.json();
+// }
+
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}${ROUTES.API.POSTS}/${slug}`, { 
-    next: { 
-      tags: ['posts']
-    }
-  });
-  if (!res.ok) {
-    return null;
-  }
-  return res.json();
+  await new Promise(resolve => setTimeout(resolve, 100)); // simulate delay
+  
+  const post = posts.find(p => p.slug === slug);
+  return post || null;
 }
+
+
 
 export async function createPost(data: CreatePostData): Promise<BlogPost> {
   await new Promise(resolve => setTimeout(resolve, 100));
