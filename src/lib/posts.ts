@@ -1,6 +1,5 @@
 import { BlogPost } from '@/types/blog';
 import { CreatePostData, UpdatePostData } from '@/lib/validation';
-import { ROUTES } from '@/constants/routes';
 import postsData from '@/data/posts.json';
 
 let posts: BlogPost[] = [...postsData];
@@ -9,17 +8,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
   return posts;
 }
 
-// export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-//   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}${ROUTES.API.POSTS}/${slug}`, { 
-//     next: { 
-//       tags: ['posts']
-//     }
-//   });
-//   if (!res.ok) {
-//     return null;
-//   }
-//   return res.json();
-// }
+
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   await new Promise(resolve => setTimeout(resolve, 100)); // simulate delay
