@@ -2,19 +2,22 @@ import { BlogPost } from '@/types/blog';
 import { CreatePostData, UpdatePostData } from '@/lib/validation';
 import postsData from '@/data/posts.json';
 
-// In-memory storage for development (replace with database in production)
 let posts: BlogPost[] = [...postsData];
 
 export async function getAllPosts(): Promise<BlogPost[]> {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 100));
-  return [...posts];
+  return posts;
 }
 
+
+
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  await new Promise(resolve => setTimeout(resolve, 100));
-  return posts.find(post => post.slug === slug) || null;
+  await new Promise(resolve => setTimeout(resolve, 100)); // simulate delay
+  
+  const post = posts.find(p => p.slug === slug);
+  return post || null;
 }
+
+
 
 export async function createPost(data: CreatePostData): Promise<BlogPost> {
   await new Promise(resolve => setTimeout(resolve, 100));

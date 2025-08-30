@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 interface SearchFilterProps {
   onSearch: (query: string, tags: string[]) => void;
@@ -18,7 +18,7 @@ export default function SearchFilter({
   initialTags = [],
   className = '',
 }: SearchFilterProps) {
-  const router = useRouter();
+
   const searchParams = useSearchParams();
   
   const [searchQuery, setSearchQuery] = useState(initialQuery);

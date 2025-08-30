@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllPosts, createPost } from '@/lib/posts';
+import { createPost, getAllPosts } from '@/lib/posts';
 import { validateCreatePost } from '@/lib/validation';
 
 export async function GET(request: NextRequest) {
@@ -9,36 +9,39 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
 
-    let posts = await getAllPosts();
+    let allPosts = await getAllPosts();
 
-    // Search functionality
     if (query) {
-      const searchResults = posts.filter(post => 
+      const searchResults = allPosts.filter(post => 
         post.title.toLowerCase().includes(query.toLowerCase()) ||
         post.excerpt.toLowerCase().includes(query.toLowerCase()) ||
         post.author.toLowerCase().includes(query.toLowerCase())
       );
-      posts = searchResults;
+      allPosts = searchResults;
     }
 
-    // Pagination
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
-    const paginatedPosts = posts.slice(startIndex, endIndex);
+    const paginatedPosts = allPosts.slice(startIndex, endIndex);
 
     const response = {
       posts: paginatedPosts,
       pagination: {
         page,
         limit,
-        total: posts.length,
-        totalPages: Math.ceil(posts.length / limit),
-        hasNext: endIndex < posts.length,
+        total: allPosts.length,
+        totalPages: Math.ceil(allPosts.length / limit),
+        hasNext: endIndex < allPosts.length,
         hasPrev: page > 1
       }
     };
 
-    return NextResponse.json(response, { status: 200 });
+    return NextResponse.json(response, {
+      status: 200,
+      headers: {
+        'Cache-Control': 's-maxage=10, stale-while-revalidate=59',
+      },
+    });
   } catch (error) {
     console.error('Error fetching posts:', error);
     return NextResponse.json(
@@ -52,7 +55,6 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    // Validate input data
     const validation = validateCreatePost(body);
     if (!validation.isValid) {
       return NextResponse.json(
@@ -64,7 +66,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create the post
     const newPost = await createPost(body);
 
     return NextResponse.json(newPost, { status: 201 });

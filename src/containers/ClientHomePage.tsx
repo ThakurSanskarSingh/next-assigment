@@ -8,9 +8,10 @@ import { BlogPost } from '@/types/blog';
 
 interface ClientHomePageProps {
   children: ReactNode;
+  initialPosts: BlogPost[];
 }
 
-export default function ClientHomePage({ children }: ClientHomePageProps) {
+export default function ClientHomePage({ children, initialPosts }: ClientHomePageProps) {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
   const initialTags = searchParams.get('tags') ? searchParams.get('tags')!.split(',') : [];
@@ -25,23 +26,15 @@ export default function ClientHomePage({ children }: ClientHomePageProps) {
 
   useEffect(() => {
     setIsClientSide(true);
-    
-    const extractPostsFromDOM = () => {
-      
-      searchPosts('').then(posts => {
-        setAllPosts(posts);
-        setFilteredPosts(posts);
-        
-               const tags = new Set<string>();
-        posts.forEach(post => {
-          post.tags?.forEach(tag => tags.add(tag));
-        });
-        setAvailableTags(Array.from(tags));
-      });
-    };
-    
-    extractPostsFromDOM();
-  }, []);
+    setAllPosts(initialPosts);
+    setFilteredPosts(initialPosts);
+
+    const tags = new Set<string>();
+    initialPosts.forEach(post => {
+      post.tags?.forEach(tag => tags.add(tag));
+    });
+    setAvailableTags(Array.from(tags));
+  }, [initialPosts]);
 
  
   const handleSearch = async (query: string, tags: string[]) => {
@@ -89,32 +82,49 @@ export default function ClientHomePage({ children }: ClientHomePageProps) {
         </div>
       ) : (
         <div className="relative">
-         
-          {children}
-          
-         
-          {(searchQuery || selectedTags.length > 0) && (
-            <div className="absolute inset-0 bg-white">
-              {filteredPosts.length === 0 ? (
-                <div className="text-center py-12">
-                  <p className="text-gray-500">No posts found matching your search criteria.</p>
-                  <button 
-                    onClick={() => handleSearch('', [])}
-                    className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+          {filteredPosts.length === 0 && (searchQuery || selectedTags.length > 0) ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No posts found matching your search criteria.</p>
+              <button 
+                onClick={() => handleSearch('', [])}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Clear Search
+              </button>
+            </div>
+          ) : filteredPosts.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="max-w-md mx-auto">
+                <div className="flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4">
+                  <svg 
+                    className="w-8 h-8 text-gray-400" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
                   >
-                    Clear Search
-                  </button>
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
+                    />
+                  </svg>
                 </div>
-              ) : (
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                  {filteredPosts.map((post) => (
-                    <div key={post.id}>
-                     
-                      <BlogCard post={post} />
-                    </div>
-                  ))}
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  No blog posts yet
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Check back soon for new content, or create your first post!
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+              {filteredPosts.map((post) => (
+                <div key={post.id}>
+                  <BlogCard post={post} />
                 </div>
-              )}
+              ))}
             </div>
           )}
         </div>
