@@ -1,3 +1,6 @@
+
+//below function is to make api calls with error handling and passing headers and method in options
+
 export async function apiFetch(url: string, options: RequestInit = {}) {
   try {
     const response = await fetch(url, {
@@ -26,9 +29,5 @@ export async function apiFetch(url: string, options: RequestInit = {}) {
   }
 }
 
-export const api = {
-  get: (url: string) => apiFetch(url),
-  post: (url: string, body: any) => apiFetch(url, { method: 'POST', body: JSON.stringify(body) }),
-  put: (url: string, body: any) => apiFetch(url, { method: 'PUT', body: JSON.stringify(body) }),
-  delete: (url: string) => apiFetch(url, { method: 'DELETE' }),
-};
+
+

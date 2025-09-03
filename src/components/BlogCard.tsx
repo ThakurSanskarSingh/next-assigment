@@ -7,25 +7,35 @@ import { getPostViewRoute } from '@/constants/routes';
 import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import shareImg from '../../public/icons/share-img.svg';
+import like from '../../public/icons/like.png';
+import likeFilled from '../../public/icons/like-filled.png';
 import { handleShare } from '@/util/handleShare';
 
 interface BlogCardProps {
   post: BlogPost;
 }
+ 
+ 
 
 export default function BlogCard({ post }: BlogCardProps) {
   const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [isShared, setIsShared] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  const baseClasses = "flex items-center space-x-1 text-sm transition-colors";
+  const likedClasses = isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-500';
+  const isLoadingClass = isLoading ? 'animate-pulse' : '';
+  const shareClasses = isShared ? 'text-green-500' : 'text-gray-500 hover:text-blue-500';
   return (
-    <article className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-200 border border-gray-100">
+    <article className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow min-h-[320px] flex flex-col duration-200 border border-gray-100">
       <header className="mb-4">
-        <h2 className="text-xl font-semibold mb-2 leading-tight">
+        <h2 className="text-xl font-semibold mb-2 min-h-[3.5rem] leading-tight">
           <Link
             href={getPostViewRoute(post.slug)}
             className="text-blue-600 hover:text-blue-800 transition-colors"
           >
+            
             {post.title}
           </Link>
         </h2>
@@ -42,7 +52,7 @@ export default function BlogCard({ post }: BlogCardProps) {
         </div>
       </header>
 
-      <div className="mb-4">
+      <div className="mb-4 flex-grow">
         <p className="text-gray-600 line-clamp-3 leading-relaxed">
           {post.excerpt}
         </p>
@@ -73,22 +83,15 @@ export default function BlogCard({ post }: BlogCardProps) {
               setTimeout(() => setIsLoading(false), 300);
             }}
             disabled={isLoading}
-            className={twMerge("flex items-center space-x-1 text-sm", isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-500', 'transition-colors')}
+            className={twMerge(baseClasses, likedClasses)}
           >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              className={`h-5 w-5 ${isLoading ? 'animate-pulse' : ''}`} 
-              fill={isLiked ? 'currentColor' : 'none'} 
-              viewBox="0 0 24 24" 
-              stroke="currentColor"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={1.5} 
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" 
-              />
-            </svg>
+            <Image 
+              src={isLiked ? likeFilled: like}
+                   alt="Like"
+                        width={20}
+                height={20}
+                 className={isLoadingClass}
+/>
             <span>{likes}</span>
           </button>
           
@@ -106,9 +109,9 @@ export default function BlogCard({ post }: BlogCardProps) {
     setIsLoading(false);
   }}
   disabled={isLoading || isShared}
-            className={`flex items-center space-x-1 text-sm ${isShared ? 'text-green-500' : 'text-gray-500 hover:text-blue-500'} transition-colors`}
+            className={twMerge(baseClasses,shareClasses)}
           >
-            <Image src={shareImg} alt="Share Icon" className={twMerge("h-5 w-5", isLoading ? "animate-pulse" : "")} />
+            <Image src={shareImg} alt="Share Icon" className={twMerge("h-5 w-5",isLoadingClass)} />
             <span>{isShared ? 'Shared!' : 'Share'}</span>
           </button>
         </div>

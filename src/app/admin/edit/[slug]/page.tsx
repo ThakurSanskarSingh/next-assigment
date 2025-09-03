@@ -3,6 +3,7 @@ import { redirect, notFound } from 'next/navigation';
 import PostForm from '@/components/PostForm';
 import { updatePostAction } from '@/app/actions';
 import { getPostBySlug } from '@/lib/posts';
+import { ROUTES } from '@/constants/routes';
 
 interface EditPostPageProps {
   params: Promise<{
@@ -15,7 +16,7 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
   const session = await auth();
   
   if (!session) {
-    redirect('/login');
+    redirect(ROUTES.LOGIN);
   }
 
   const { slug } = await params;

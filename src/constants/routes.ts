@@ -24,3 +24,5 @@ export const ROUTES = {
   export const getPostApiRoute = (slug?: string) => slug ? `${ROUTES.API.POSTS}/${slug}` : ROUTES.API.POSTS;
   
   export type RouteType = typeof ROUTES[keyof typeof ROUTES] | typeof ROUTES.API[keyof typeof ROUTES.API];
+
+  

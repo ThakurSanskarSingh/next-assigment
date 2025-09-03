@@ -1,19 +1,26 @@
 @import "tailwindcss";
 
-@layer base {
+
+
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  @layer base {
   html {
     scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  html::-webkit-scrollbar {
+    display: none;
   }
   
   body {
     @apply bg-gray-50 text-gray-900;
   }
 }
-
-@layer components {
-  .container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
 }
 
 @layer utilities {
@@ -31,27 +38,15 @@
     overflow: hidden;
   }
 
-  .scrollbar-thin {
-    scrollbar-width: thin;
-    scrollbar-color: rgb(156 163 175) rgb(243 244 246);
-  }
 
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-  }
+  /* .hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
 
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background: rgb(243 244 246);
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: rgb(156 163 175);
-    border-radius: 3px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(107 114 128);
-  }
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+} */
 }
 
 @keyframes slideDown {

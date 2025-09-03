@@ -1,4 +1,5 @@
 import { auth } from '@/auth';
+import { ROUTES } from '@/constants/routes';
 import { redirect } from 'next/navigation';
 
 interface ProtectedRouteProps {
@@ -8,7 +9,7 @@ interface ProtectedRouteProps {
 
 export default async function ProtectedRoute({ 
   children, 
-  fallback = '/login' 
+  fallback = ROUTES.LOGIN 
 }: ProtectedRouteProps) {
   const session = await auth();
   

@@ -4,7 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { BlogPost } from '@/types/blog';
 import { ROUTES } from '@/constants/routes';
+import { CreatePostSchema } from '@/lib/validation';
+import Image from 'next/image';
+import error from '../../public/icons/search-dot.png';
+import { useForm } from 'react-hook-form';
+import z from 'zod';
 
+ type PostFormData = z.infer<typeof CreatePostSchema>;
 interface PostFormProps {
   post?: BlogPost;
   onSubmit: (formData: FormData) => Promise<{ success: boolean; message?: string }>;
@@ -13,59 +19,58 @@ interface PostFormProps {
 
 export default function PostForm({ post, onSubmit, isSubmitting = false }: PostFormProps) {
   const router = useRouter();
-  const [errors, setErrors] = useState<string[]>([]);
-  const [formState, setFormState] = useState({
-    title: post?.title || '',
-    content: post?.content || '',
-    excerpt: post?.excerpt || '',
-    author: post?.author || '',
-    tags: post?.tags?.join(', ') || ''
-  });
+  const [submitError, setSubmitError] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormState(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  const errorClass = "text-red-500 text-sm mt-1"
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setErrors([]);
 
-    const formData = new FormData(e.currentTarget);
-    
+   const {register, handleSubmit, formState: { errors }} = useForm<PostFormData>({
+    defaultValues: {
+      title: post?.title || '',
+      excerpt: post?.excerpt || '',
+      content: post?.content || '',
+      author: post?.author || '',
+      tags: post?.tags ?? []
+    }
+   })
+  const onFormSubmit = async (data: PostFormData) => {
+    setSubmitError('');
+    const formData = new FormData();
+    formData.append('title', data.title);
+    formData.append('excerpt', data.excerpt);
+    formData.append('content', data.content);
+    formData.append('author', data.author);
+    formData.append('tags', Array.isArray(data.tags) ? data.tags.join(',') : (data.tags || '')); 
+
     try {
       const result = await onSubmit(formData);
-      
       if (result.success) {
         router.push(ROUTES.ADMIN);
         router.refresh();
       } else if (result.message) {
-        setErrors([result.message]);
-      }
+        setSubmitError(result.message);
+      } 
     } catch (error) {
-      setErrors(['An unexpected error occurred. Please try again.']);
+      setSubmitError('An unexpected error occurred. Please try again.');
       console.error('Form submission error:', error);
     }
   };
 
+  const allErrors = [...submitError ? [submitError] : [], ...Object.values(errors).map(err => err?.message || '').filter(Boolean)];
+   
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {errors.length > 0 && (
+    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+      {allErrors.length > 0 && (
         <div className="bg-red-50 p-4 rounded-md">
           <div className="flex">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
+             <Image src={error} height={5} width={5} alt='dot'/>
             </div>
             <div className="ml-3">
               <h3 className="text-sm font-medium text-red-800">There were errors with your submission:</h3>
               <div className="mt-2 text-sm text-red-700">
                 <ul className="list-disc pl-5 space-y-1">
-                  {errors.map((error, index) => (
+                  {allErrors.map((error, index) => (
                     <li key={index}>{error}</li>
                   ))}
                 </ul>
@@ -79,65 +84,69 @@ export default function PostForm({ post, onSubmit, isSubmitting = false }: PostF
         <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
         <input
           type="text"
-          name="title"
           id="title"
-          required
-          value={formState.title}
-          onChange={handleChange}
+          {...register('title')}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
+        {errors.title && (
+          <p className={errorClass}>{errors.title.message}</p>
+        )}
       </div>
 
       <div>
         <label htmlFor="excerpt" className="block text-sm font-medium text-gray-700">Excerpt</label>
         <textarea
-          name="excerpt"
           id="excerpt"
           required
           rows={3}
-          value={formState.excerpt}
-          onChange={handleChange}
+          {...register('excerpt')}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
+        {errors.excerpt && (
+          <p className= {errorClass}>{errors.excerpt.message}</p>
+        )}
       </div>
 
       <div>
         <label htmlFor="content" className="block text-sm font-medium text-gray-700">Content</label>
         <textarea
-          name="content"
           id="content"
           required
           rows={8}
-          value={formState.content}
-          onChange={handleChange}
+         {...register('content')}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
+        {errors.content && (
+          <p className={errorClass}>{errors.content.message}</p>
+        )}
       </div>
 
       <div>
         <label htmlFor="author" className="block text-sm font-medium text-gray-700">Author</label>
         <input
           type="text"
-          name="author"
           id="author"
           required
-          value={formState.author}
-          onChange={handleChange}
+         {...register('author')}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
         />
+        {errors.author && (
+          <p className={errorClass}>{errors.author.message}</p>
+        )}
       </div>
 
       <div>
         <label htmlFor="tags" className="block text-sm font-medium text-gray-700">Tags (comma separated)</label>
         <input
           type="text"
-          name="tags"
           id="tags"
-          value={formState.tags}
-          onChange={handleChange}
+        {...register('tags')}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           placeholder="technology, news, tutorial"
         />
+        {errors.tags && (
+          <p className={errorClass}>{errors.tags.message}</p>
+        )}
       </div>
 
       <div className="flex justify-end space-x-3">

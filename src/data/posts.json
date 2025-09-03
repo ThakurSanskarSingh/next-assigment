@@ -14,7 +14,7 @@
     "title": "Mastering Server Components in React",
     "slug": "mastering-server-components-react",
     "content": "Server Components represent a paradigm shift in how we think about React applications. They allow us to render components on the server, reducing the JavaScript bundle size and improving performance.\n\n## Benefits of Server Components\n\n- Zero JavaScript sent to the client\n- Direct access to backend resources\n- Improved SEO and initial page load\n- Better security for sensitive operations\n\nIn this article, we'll explore practical examples and best practices...",
-    "excerpt": "Learn how Server Components can revolutionize your React applications with better performance and user experience.",
+    "excerpt": "Learn how Server Components can revolutionize your React applications with better performance.",
     "publishedAt": "2024-01-12T14:30:00Z",
     "author": "Jane Smith",
     "tags": ["react", "server-components", "performance"]
