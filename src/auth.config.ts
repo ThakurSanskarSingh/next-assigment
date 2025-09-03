@@ -1,5 +1,5 @@
 import Credentials from 'next-auth/providers/credentials';
-
+import {ROUTES} from '@/constants/routes';
 export const authConfig = {
   providers: [
     Credentials({
@@ -13,8 +13,11 @@ export const authConfig = {
         const password = credentials?.password as string | undefined;
         if (!email || !password) return null;
 
-        // Demo user with role (replace with real user lookup)
-        if (email.toLowerCase() === 'admin@example.com' && password === 'admin123') {
+        
+        if (
+  email.toLowerCase() === process.env.DEMO_USER?.toLowerCase() &&
+  password === process.env.DEMO_PASS
+) {
           return { 
             id: '1', 
             email, 
@@ -43,6 +46,6 @@ export const authConfig = {
     },
   },
   pages: {
-    signIn: '/login',
+    signIn: ROUTES.LOGIN,
   },
 }; 

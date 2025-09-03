@@ -10,6 +10,7 @@ interface PostPageProps {
   }>;
 }
 
+
 export async function generateStaticParams() {
   const posts = await getAllPosts();
   return posts.map((post) => ({
@@ -109,7 +110,7 @@ export default async function PostPage({ params }: PostPageProps) {
           <div className="flex justify-between items-center">
             {previous ? (
               <Link
-                href={`/posts/${previous.slug}`}
+                href={`${ROUTES.POSTS}/${previous.slug}`}
                 className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group"
               >
                 <ChevronLeftIcon className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
@@ -124,7 +125,7 @@ export default async function PostPage({ params }: PostPageProps) {
             
             {next ? (
               <Link
-                href={`/posts/${next.slug}`}
+                href={`${ROUTES.POSTS}/${next.slug}`}
                 className="flex items-center text-blue-600 hover:text-blue-800 transition-colors group text-right"
               >
                 <div className="text-right">

@@ -56,7 +56,6 @@ export async function PUT(
 
     const body = await request.json();
     
-    // Validate input data
     const validation = validateUpdatePost(body);
     if (!validation.isValid) {
       return NextResponse.json(
@@ -68,7 +67,6 @@ export async function PUT(
       );
     }
 
-    // Check if post exists
     const existingPost = await getPostBySlug(slug);
     if (!existingPost) {
       return NextResponse.json(

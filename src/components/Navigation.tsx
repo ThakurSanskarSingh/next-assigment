@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { MenuIcon, XIcon, UserIcon, LogOutIcon } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
 import { useSession, signOut } from 'next-auth/react';
+import { twMerge } from 'tailwind-merge';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -62,11 +63,10 @@ export default function Navigation() {
     const activeClasses = isActive
       ? "text-blue-600 bg-blue-50 border-blue-200"
       : "text-gray-700 hover:text-blue-600 hover:bg-gray-50";
-
     return (
       <Link
         href={href}
-        className={`${baseClasses} ${activeClasses}`}
+        className={twMerge(baseClasses, activeClasses)}
         {...(onClick && { onClick })}
       >
         {label}
@@ -75,11 +75,11 @@ export default function Navigation() {
   };
 
   return (
-    <nav className="bg-white shadow-lg sticky top-0 z-50">
+    <nav className="bg-white shadow-lg sticky top-0 z-50 overflow-hidden hide-scrollbar">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
          
-          <Link href={ROUTES.HOME} className="flex items-center space-x2">
+          <Link href={ROUTES.HOME} className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">B</span>
             </div>

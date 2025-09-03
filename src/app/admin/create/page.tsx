@@ -2,13 +2,17 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import PostForm from '@/components/PostForm';
 import { createPostAction } from '@/app/actions';
+import {ROUTES} from '@/constants/routes';
+
+
 
 export default async function CreatePostPage() {
   const session = await auth();
   
   if (!session) {
-    redirect('/login');
+    redirect(ROUTES.LOGIN);
   }
+
 
   return (
     <div className="container mx-auto px-4 py-8">

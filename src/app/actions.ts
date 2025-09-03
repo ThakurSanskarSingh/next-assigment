@@ -23,7 +23,8 @@ export async function createPostAction(formData: FormData) {
   if (!validation.isValid) {
     return { success: false, message: validation.errors.join(', ') };
   }
-
+ //revalidation ka matlab hai cache ko update krna taki naya data show ho jaye. ye do tarah se hota hai - by time aur manually
+ //yaha pe manually revalidate kr rahe hain taki naya post turant dikhai de
   try {
     await createPost(postData);
   revalidateTag('posts');
@@ -59,8 +60,8 @@ export async function updatePostAction(slug: string, formData: FormData) {
   try {
     const updatedPost = await updatePost(slug, postData);
   revalidateTag('posts');
-  revalidatePath('/');
-  revalidatePath(`/posts/${slug}`);
+  revalidatePath(ROUTES.HOME);
+  revalidatePath(`${ROUTES.POSTS}/${slug}`);
     
     if (!updatedPost) {
       return { success: false, message: 'Post not found' };
@@ -79,7 +80,7 @@ export async function deletePostAction(slug: string) {
   try {
     const success = await deletePost(slug);
   revalidateTag('posts');
-  revalidatePath('/');
+  revalidatePath(ROUTES.HOME);
     
     if (!success) {
       return { success: false, message: 'Post not found' };

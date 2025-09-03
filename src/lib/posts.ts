@@ -11,7 +11,7 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
-  await new Promise(resolve => setTimeout(resolve, 100)); // simulate delay
+  await new Promise(resolve => setTimeout(resolve, 100)); 
   
   const post = posts.find(p => p.slug === slug);
   return post || null;
